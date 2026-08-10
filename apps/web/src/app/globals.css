@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/* ─── CSS Custom Properties (Design Tokens) ─────────────────── */
+@theme {
+  --color-brand-dark: #0A0A0A;
+  --color-brand-darker: #050505;
+  --color-brand-card: rgba(255, 255, 255, 0.04);
+  --color-brand-card-hover: rgba(255, 255, 255, 0.08);
+  --color-brand-border: rgba(255, 255, 255, 0.08);
+  --color-brand-border-hover: rgba(255, 255, 255, 0.15);
+  --color-brand-text: #FAFAFA;
+  --color-brand-text-muted: #A1A1AA;
+  --color-brand-accent: #E50914; /* Netflix Red */
+  --color-brand-accent-2: #7F1D1D; /* Dark Red */
+  --color-brand-success: #10B981;
+  --color-brand-danger: #EF4444;
+  --color-brand-warning: #F59E0B;
+  
+  --color-tier-bronze: #CD7F32;
+  --color-tier-silver: #C0C0C0;
+  --color-tier-gold: #FFD700;
+  --color-tier-platinum: #E5E4E2;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+
+  --animate-fade-up: fade-up 0.5s ease-out forwards;
+  --animate-shimmer: shimmer 2s infinite linear;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-coin-spin: coin-spin 0.6s ease-out;
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 20px rgba(229, 9, 20, 0.3); }
+  to { box-shadow: 0 0 40px rgba(229, 9, 20, 0.6); }
+}
+
+@keyframes coin-spin {
+  0% { transform: rotateY(0deg) scale(0.5); opacity: 0; }
+  50% { transform: rotateY(180deg) scale(1.2); }
+  100% { transform: rotateY(360deg) scale(1); opacity: 1; }
+}
+
+/* ─── Base Styles ───────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-dark);
+  color: var(--color-brand-text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ─── Glassmorphism Utility ─────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Gradient Text ─────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #E50914, #B91C1C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Gradient Border ───────────────────────────────────────── */
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(229, 9, 20, 0.5), rgba(185, 28, 28, 0.5));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ─── Safe Area (Mobile) ────────────────────────────────────── */
+.safe-bottom {
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}
