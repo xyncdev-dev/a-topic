@@ -37,12 +37,25 @@ router.post('/register', async (req: Request, res: Response) => {
       userId = existingUser.id;
     } else {
       // Create new user
-      const [id] = await db('users').insert({
-        email: email.toLowerCase(),
+      const normalizedEmail = email.toLowerCase();
+      await db('users').insert({
+        email: normalizedEmail,
         password_hash: passwordHash,
         name: name || null,
       });
-      userId = id;
+
+      // SQLite and PostgreSQL return different values from insert() unless
+      // RETURNING is configured. Re-read the row so both databases behave
+      // identically in local development and on Vercel/Supabase.
+      const createdUser = await db('users')
+        .where({ email: normalizedEmail })
+        .first();
+
+      if (!createdUser) {
+        throw new Error('User was inserted but could not be retrieved');
+      }
+
+      userId = createdUser.id;
     }
 
     const user = await db('users').where({ id: userId }).first();
