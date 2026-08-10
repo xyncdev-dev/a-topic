@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:vercel": "node scripts/build-vercel.mjs",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@a-topic/api": "*",
     "@a-topic/shared": "*",
     "framer-motion": "^11.3.0",
     "lucide-react": "^1.31.0",
