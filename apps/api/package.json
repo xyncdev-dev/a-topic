@@ -2,13 +2,15 @@
   "name": "@a-topic/api",
   "version": "1.0.0",
   "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "db:migrate": "knex migrate:latest --knexfile knexfile.ts",
-    "db:seed": "knex seed:run --knexfile knexfile.ts",
-    "db:rollback": "knex migrate:rollback --knexfile knexfile.ts"
+    "db:migrate": "tsx scripts/db.ts migrate",
+    "db:seed": "tsx scripts/db.ts seed",
+    "db:rollback": "tsx scripts/db.ts rollback"
   },
   "dependencies": {
     "@a-topic/shared": "*",
@@ -19,6 +21,9 @@
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "nanoid": "^3.3.7",
+    "pg": "^8.13.0"
+  },
+  "optionalDependencies": {
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

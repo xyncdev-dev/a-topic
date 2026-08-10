@@ -40,7 +40,7 @@ export async function findCustomerByEmail(email: string): Promise<string | null>
       }),
     });
 
-    const data = await response.json();
+    const data: any = await response.json();
     const edges = data?.data?.customers?.edges;
 
     if (edges && edges.length > 0) {
@@ -133,7 +133,7 @@ export async function createDiscountCode(
       body: JSON.stringify({ query: mutation, variables }),
     });
 
-    const data = await response.json();
+    const data: any = await response.json();
     const userErrors = data?.data?.discountCodeBasicCreate?.userErrors;
 
     if (userErrors && userErrors.length > 0) {
@@ -179,7 +179,7 @@ export async function getOrderByName(orderName: string): Promise<any> {
       },
     });
 
-    const data = await response.json();
+    const data: any = await response.json();
     if (data?.orders && data.orders.length > 0) {
       return data.orders[0];
     }

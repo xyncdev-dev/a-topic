@@ -8,13 +8,17 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=apps/api & npm run dev --workspace=apps/web",
+    "dev": "npm run build --workspace=packages/shared && concurrently -n api,web \"npm run dev:api\" \"npm run dev:web\"",
     "dev:api": "npm run dev --workspace=apps/api",
     "dev:web": "npm run dev --workspace=apps/web",
     "build": "npm run build --workspace=packages/shared && npm run build --workspace=apps/api && npm run build --workspace=apps/web",
     "build:api": "npm run build --workspace=apps/api",
     "build:web": "npm run build --workspace=apps/web",
     "db:migrate": "npm run db:migrate --workspace=apps/api",
-    "db:seed": "npm run db:seed --workspace=apps/api"
+    "db:seed": "npm run db:seed --workspace=apps/api",
+    "db:rollback": "npm run db:rollback --workspace=apps/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
   }
 }
