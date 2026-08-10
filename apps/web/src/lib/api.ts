@@ -1,4 +1,10 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+// In production the API is served by the same Vercel deployment through the
+// /api rewrite. This avoids baking a stale localhost or external URL into the
+// client bundle. Local development keeps using the standalone API server.
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? '/api'
+    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
