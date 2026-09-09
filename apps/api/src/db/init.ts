@@ -14,6 +14,11 @@ let dbReady: Promise<void> | null = null;
 export async function ensureDatabase(): Promise<void> {
   if (dbReady) return dbReady;
 
+  if (process.env.VERCEL && !process.env.DATABASE_URL) {
+    console.warn('⚠️ DATABASE_URL is not set on Vercel. Skipping automatic migrations.');
+    return;
+  }
+
   dbReady = (async () => {
     const { migrationsDir, seedsDir, extension } = resolveDbPaths();
     const loadExtensions = [`.${extension}`];

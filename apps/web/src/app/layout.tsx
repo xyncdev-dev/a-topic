@@ -30,6 +30,11 @@ export const viewport: Viewport = {
   themeColor: '#0A0A0A',
 };
 
+const clerkPublishableKey =
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+  process.env.CLERK_PUBLISHABLE_KEY ||
+  'pk_test_bW9kZXJuLWdyb3VwZXItNDYwMC5jbGVyay5hY2NvdW50cy5kZXYk';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${inter.variable} ${spaceGrotesk.variable}`}>
@@ -38,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="antialiased">
-        <ClerkProvider>
+        <ClerkProvider publishableKey={clerkPublishableKey}>
           <AuthProvider>
           <main className="w-full min-h-dvh relative">
           {children}

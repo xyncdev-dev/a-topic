@@ -17,8 +17,13 @@ export const config = {
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   jwtSecret: process.env.JWT_SECRET || 'change-this-in-production',
   jwtExpiresIn: (process.env.JWT_EXPIRES_IN || '24h') as SignOptions['expiresIn'],
-  clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '',
-  clerkSecretKey: process.env.CLERK_SECRET_KEY || '',
+  clerkPublishableKey:
+    process.env.CLERK_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+    'pk_test_bW9kZXJuLWdyb3VwZXItNDYwMC5jbGVyay5hY2NvdW50cy5kZXYk',
+  clerkSecretKey:
+    process.env.CLERK_SECRET_KEY ||
+    'sk_test_9c9CX7CuMlAqHjFBVLmVnZ3l5mx1MSzxaR7jySivOa',
   shopify: {
     storeUrl: process.env.SHOPIFY_STORE_URL || '',
     accessToken: process.env.SHOPIFY_ACCESS_TOKEN || '',
