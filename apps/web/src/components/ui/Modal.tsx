@@ -22,49 +22,50 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
  };
  }, [isOpen]);
 
- return (
- <AnimatePresence>
- {isOpen && (
- <>
- {/* Backdrop */}
- <motion.div
- initial={{ opacity: 0 }}
- animate={{ opacity: 1 }}
- exit={{ opacity: 0 }}
- transition={{ duration: 0.2 }}
- className="fixed inset-0 bg-black/70 z-50"
- onClick={onClose}
- />
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+            onClick={onClose}
+          />
 
- {/* Modal Content */}
- <motion.div
- initial={{ opacity: 0, scale: 0.9, y: 20 }}
- animate={{ opacity: 1, scale: 1, y: 0 }}
- exit={{ opacity: 0, scale: 0.9, y: 20 }}
- transition={{ type: 'spring', stiffness: 300, damping: 25 }}
- className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 max-w-md mx-auto"
- >
- <div className="p-6 relative overflow-hidden">
- {/* Decorative glow */}
- <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#E50914]/20 blur-3xl pointer-events-none" />
- <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[#7F1D1D]/20 blur-3xl pointer-events-none" />
+          {/* Modal Content - Retro Dialog */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+            className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 max-w-md mx-auto win-frame font-mono selection:bg-[#ca3a3a]"
+          >
+            {/* Retro Titlebar */}
+            <div className="win-titlebar">
+              <span className="flex items-center gap-1.5">
+                <span>⚠</span>
+                <span>SYSTEM_DIALOG // A-TYPIC</span>
+              </span>
+              <button
+                onClick={onClose}
+                className="win-btn"
+                aria-label="Cerrar ventana"
+              >
+                ✕
+              </button>
+            </div>
 
- {/* Close button */}
- <button
- onClick={onClose}
- className="absolute top-4 right-4 text-[#A1A1AA] hover:text-white transition-colors z-10 cursor-pointer"
- aria-label="Close modal"
- >
- <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
- </svg>
- </button>
-
- <div className="relative z-10">{children}</div>
- </div>
- </motion.div>
- </>
- )}
- </AnimatePresence>
- );
+            {/* Window Interior */}
+            <div className="p-5 bg-[#0a0a0a] text-white">
+              {children}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
 }

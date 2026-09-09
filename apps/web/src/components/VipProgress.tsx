@@ -4,93 +4,99 @@ import { motion } from 'framer-motion';
 import type { TierInfo } from '@a-topic/shared';
 
 interface VipProgressProps {
- tierInfo: TierInfo;
- className?: string;
+  tierInfo: TierInfo;
+  className?: string;
 }
 
 const tierColors: Record<string, string> = {
- bronze: '#CD7F32',
- silver: '#C0C0C0',
- gold: '#FFD700',
- platinum: '#FCA5A5',
-};
-
-const tierGradients: Record<string, string> = {
- bronze: 'bg-gradient-to-r from-[#CD7F32] to-[#A0522D]',
- silver: 'bg-gradient-to-r from-[#C0C0C0] to-[#808080]',
- gold: 'bg-gradient-to-r from-[#FFD700] to-[#B8860B]',
- platinum: 'bg-gradient-to-r from-[#FCA5A5] to-[#E50914]',
+  bronze: '#CD7F32',
+  silver: '#C0C0C0',
+  gold: '#FFD700',
+  platinum: '#ff6b6b',
 };
 
 export function VipProgress({ tierInfo, className = '' }: VipProgressProps) {
- const { current, next, progress, coinsToNext } = tierInfo;
- const currentColor = tierColors[current.slug] || '#E50914';
- const currentGradient = tierGradients[current.slug] || ' ';
+  const { current, next, progress, coinsToNext } = tierInfo;
+  const currentColor = tierColors[current.slug] || '#ca3a3a';
 
- return (
- <motion.div
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ duration: 0.5, delay: 0.1 }}
- className={` p-5 ${className}`}
- >
- {/* Tier Badge + Name */}
- <div className="flex items-center justify-between mb-4">
- <div className="flex items-center gap-3">
- <div
- className="w-10 h-10 flex items-center justify-center text-xl"
- style={{ backgroundColor: `${currentColor}20` }}
- >
- {current.icon}
- </div>
- <div>
- <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-medium">Nivel VIP</p>
- <p className="text-lg font-bold font-[family-name:var(--font-display)]" style={{ color: currentColor }}>
- {current.name}
- </p>
- </div>
- </div>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.05 }}
+      className={`win-frame font-mono selection:bg-[#ca3a3a] ${className}`}
+    >
+      {/* Titlebar */}
+      <div className="win-titlebar">
+        <span className="flex items-center gap-1.5">
+          <span>⚙</span>
+          <span>C:\ATOPIC\VIP_TIER.DAT</span>
+        </span>
+        <div className="win-controls flex items-center gap-1">
+          <span className="win-btn" aria-hidden="true">_</span>
+          <span className="win-btn" aria-hidden="true">□</span>
+          <span className="win-btn" aria-hidden="true">✕</span>
+        </div>
+      </div>
 
- {next && (
- <div className="text-right">
- <p className="text-xs text-[#A1A1AA]">Siguiente</p>
- <p className="text-sm font-semibold text-white/80">
- {next.icon} {next.name}
- </p>
- </div>
- )}
- </div>
+      <div className="p-5 bg-[#0a0a0a]">
+        {/* Tier Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-10 h-10 border-2 border-t-[#ca3a3a] border-l-[#ca3a3a] border-b-[#1a0505] border-r-[#1a0505] bg-[#111111] flex items-center justify-center text-lg"
+            >
+              {current.icon}
+            </div>
+            <div>
+              <p className="text-[11px] text-[#A1A1AA] uppercase tracking-wider">
+                Nivel Actual
+              </p>
+              <p
+                className="text-base font-bold uppercase tracking-wider"
+                style={{ color: currentColor }}
+              >
+                {current.name}
+              </p>
+            </div>
+          </div>
 
- {/* Progress Bar */}
- <div className="relative h-3 bg-white/[0.06] overflow-hidden">
- <motion.div
- initial={{ width: 0 }}
- animate={{ width: `${progress}%` }}
- transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.3 }}
- className={`absolute inset-y-0 left-0 ${currentGradient}`}
- />
- {/* Shimmer on progress bar */}
- <motion.div
- initial={{ x: '-100%' }}
- animate={{ x: '200%' }}
- transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 3 }}
- className="absolute inset-y-0 w-1/3 via-white/20"
- />
- </div>
+          {next && (
+            <div className="text-right">
+              <p className="text-[11px] text-[#A1A1AA] uppercase tracking-wider">Siguiente</p>
+              <p className="text-xs font-bold text-white uppercase">
+                {next.icon} {next.name}
+              </p>
+            </div>
+          )}
+        </div>
 
- {/* Progress Label */}
- <div className="flex items-center justify-between mt-2">
- <span className="text-xs text-[#A1A1AA]">
- {Math.round(progress)}%
- </span>
- {next ? (
- <span className="text-xs text-[#A1A1AA]">
- <span className="text-white/70 font-medium">{coinsToNext.toLocaleString('es-ES')}</span> coins para {next.name}
- </span>
- ) : (
- <span className="text-xs text-[#A1A1AA]">¡Nivel máximo alcanzado! 🎉</span>
- )}
- </div>
- </motion.div>
- );
+        {/* Retro Segmented Progress Bar */}
+        <div className="retro-inset p-1">
+          <div className="relative h-4 bg-[#050505] overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+              className="h-full bg-[#ca3a3a] border-r border-[#ff6b6b]"
+            />
+          </div>
+        </div>
+
+        {/* Progress Information */}
+        <div className="flex items-center justify-between mt-3 text-xs">
+          <span className="text-white font-bold bg-[#111] border border-[#1a0505] px-2 py-0.5">
+            {Math.round(progress)}%
+          </span>
+          {next ? (
+            <span className="text-[#A1A1AA]">
+              Faltan <span className="text-white font-bold">{coinsToNext.toLocaleString('es-ES')}</span> coins para {next.name}
+            </span>
+          ) : (
+            <span className="text-emerald-400 font-bold">¡NIVEL MÁXIMO ALCANZADO!</span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
 }

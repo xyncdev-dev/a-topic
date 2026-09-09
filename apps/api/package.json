@@ -10,11 +10,14 @@
     "start": "node dist/index.js",
     "db:migrate": "tsx scripts/db.ts migrate",
     "db:seed": "tsx scripts/db.ts seed",
-    "db:rollback": "tsx scripts/db.ts rollback"
+    "db:rollback": "tsx scripts/db.ts rollback",
+    "make:admin": "tsx scripts/make-admin.ts"
   },
   "dependencies": {
     "@a-topic/shared": "*",
+    "@clerk/express": "^2.1.66",
     "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^13.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",

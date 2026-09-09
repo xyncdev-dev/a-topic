@@ -122,12 +122,13 @@ router.post('/claim-order', authMiddleware, async (req: AuthRequest, res: Respon
       return;
     }
 
-    if (!order.email || order.email.toLowerCase() !== userEmail.toLowerCase()) {
+    const orderEmail = (order.email || order.contact_email || order.customer?.email || '').toLowerCase();
+    if (!orderEmail || orderEmail !== userEmail.toLowerCase()) {
       res.status(403).json({ error: 'Este pedido no está asociado a tu cuenta de email' });
       return;
     }
 
-    if (order.financial_status !== 'paid') {
+    if (order.financial_status && order.financial_status !== 'paid') {
       res.status(400).json({ error: 'El pedido no figura como pagado' });
       return;
     }
@@ -142,7 +143,11 @@ router.post('/claim-order', authMiddleware, async (req: AuthRequest, res: Respon
     const { config } = await import('../config');
     const { addCoins } = await import('../services/coinService');
     
-    const amount = Math.floor(parseFloat(order.total_price) * config.coinsMultiplier);
+    // Dynamic multiplier from DB or config
+    const setting = await db('settings').where({ key: 'coins_multiplier' }).first();
+    const multiplier = setting ? parseInt(setting.value, 10) : config.coinsMultiplier;
+    const amount = Math.floor(parseFloat(order.total_price) * multiplier);
+
     await addCoins({
       userId,
       amount,

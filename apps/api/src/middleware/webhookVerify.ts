@@ -7,6 +7,21 @@ import { config } from '../config';
  * Must be used with express.raw({ type: 'application/json' }) on the webhook routes.
  */
 export function webhookVerify(req: Request, res: Response, next: NextFunction): void {
+  // If webhookSecret is not configured (e.g. initial setup / dev), skip HMAC validation
+  if (!config.shopify.webhookSecret) {
+    console.warn('⚠️ SHOPIFY_WEBHOOK_SECRET is not configured. Webhook signature verification is skipped.');
+    if (Buffer.isBuffer(req.body)) {
+      try {
+        req.body = JSON.parse(req.body.toString('utf-8'));
+      } catch {
+        res.status(400).json({ error: 'Invalid JSON body' });
+        return;
+      }
+    }
+    next();
+    return;
+  }
+
   const hmacHeader = req.get('X-Shopify-Hmac-Sha256');
 
   if (!hmacHeader) {

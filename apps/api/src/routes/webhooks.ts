@@ -26,6 +26,15 @@ router.post('/orders-paid', async (req: Request, res: Response) => {
     }
 
     const normalizedEmail = email.toLowerCase();
+    const orderIdStr = String(order.id);
+
+    // Check if order was already processed (via previous webhook or manual claim)
+    const existingTx = await db('transactions').where({ order_id: orderIdStr }).first();
+    if (existingTx) {
+      console.log(`Order ${orderIdStr} was already credited, skipping duplicate.`);
+      res.status(200).send('OK');
+      return;
+    }
 
     // Get multiplier from settings
     const setting = await db('settings').where({ key: 'coins_multiplier' }).first();

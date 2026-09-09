@@ -6,8 +6,16 @@ const API_URL =
     ? '/api'
     : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
-function getToken(): string | null {
+async function getToken(): Promise<string | null> {
   if (typeof window === 'undefined') return null;
+  try {
+    if ((window as any).Clerk?.session) {
+      const clerkToken = await (window as any).Clerk.session.getToken();
+      if (clerkToken) return clerkToken;
+    }
+  } catch (err) {
+    console.warn('Error obtaining Clerk token:', err);
+  }
   return localStorage.getItem('atopic_token');
 }
 
@@ -15,7 +23,7 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = getToken();
+  const token = await getToken();
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',

@@ -58,59 +58,75 @@ export default function AdminSettingsPage() {
   }
 
   return (
-    <div className="max-w-[800px] mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold font-[family-name:var(--font-display)] text-white uppercase tracking-wider">
-          Configuración General
-        </h2>
-      </div>
+    <div className="max-w-[800px] mx-auto font-mono">
+      {/* Settings Window */}
+      <div className="win-frame">
+        <div className="win-titlebar">
+          <span className="flex items-center gap-2 truncate">
+            <span>⚙</span>
+            <span>C:\SYSTEM\CONFIG.CFG // SYSTEM_PARAMETERS</span>
+          </span>
+          <span className="text-[10px]">READ/WRITE</span>
+        </div>
 
-      <div className="bg-[#0A0A0A] border border-white/10 p-6">
-        <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-6">
-          Recompensas por Compras
-        </h3>
-
-        <form onSubmit={handleSave} className="space-y-6">
-          <div>
-            <label className="block text-xs text-[#A1A1AA] mb-2 uppercase tracking-wider">
-              Multiplicador de Coins
-            </label>
-            <div className="flex items-center gap-4">
-              <div className="relative flex-1 max-w-[200px]">
-                <input
-                  type="number"
-                  min="1"
-                  step="1"
-                  value={multiplier}
-                  onChange={(e) => setMultiplier(e.target.value)}
-                  className="w-full bg-[#111] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-[#E50914] transition-colors"
-                />
-              </div>
-              <p className="text-sm text-[#777]">
-                coins por cada 1 euro gastado.
-              </p>
-            </div>
-            <p className="text-xs text-[#555] mt-2">
-              Ejemplo: Si está en 10, una compra de 5 euros otorgará 50 coins al cliente automáticamente.
+        <div className="p-5 sm:p-6 bg-[#0a0a0a]">
+          <div className="retro-inset p-4 mb-6">
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-1">
+              PARÁMETROS DE EMISIÓN DE RECOMPENSAS
+            </h3>
+            <p className="text-[11px] text-[#A1A1AA]">
+              Configuración de la tasa de conversión global para pedidos procesados en Shopify.
             </p>
           </div>
 
-          {message && (
-            <div className={`p-3 text-sm font-medium ${message.type === 'success' ? 'bg-emerald-400/10 text-emerald-400' : 'bg-red-400/10 text-red-400'}`}>
-              {message.text}
+          <form onSubmit={handleSave} className="space-y-6">
+            <div>
+              <label className="block text-xs font-bold text-white mb-2 uppercase tracking-wider">
+                MULTIPLICADOR DE COINS POR EURO
+              </label>
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="relative max-w-[160px]">
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={multiplier}
+                    onChange={(e) => setMultiplier(e.target.value)}
+                    className="retro-input w-full text-center text-lg font-black tracking-widest"
+                  />
+                </div>
+                <p className="text-xs text-[#A1A1AA]">
+                  coins asignados por cada <span className="text-white font-bold">1,00 €</span> gastado.
+                </p>
+              </div>
+              <p className="text-[11px] text-[#666] mt-2">
+                Ejemplo: Con valor en 10, un pedido de 45,00 € acreditará automáticamente 450 coins al comprador.
+              </p>
             </div>
-          )}
 
-          <div className="pt-4 border-t border-white/5">
-            <Button
-              type="submit"
-              variant="primary"
-              isLoading={isSaving}
-            >
-              Guardar Cambios
-            </Button>
-          </div>
-        </form>
+            {message && (
+              <div
+                className={`p-3 text-xs font-bold border ${
+                  message.type === 'success'
+                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                    : 'bg-[#1a0505] text-[#ff6b6b] border-[#ca3a3a]'
+                }`}
+              >
+                {message.text}
+              </div>
+            )}
+
+            <div className="pt-4 border-t border-[#1a0505]">
+              <Button
+                type="submit"
+                variant="primary"
+                isLoading={isSaving}
+              >
+                GUARDAR CAMBIOS [APPLY]
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

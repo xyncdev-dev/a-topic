@@ -40,78 +40,91 @@ export function ClaimOrderModal({ isOpen, onClose, onSuccess }: ClaimOrderModalP
  }
  };
 
- return (
- <AnimatePresence>
- {isOpen && (
- <>
- <motion.div
- initial={{ opacity: 0 }}
- animate={{ opacity: 1 }}
- exit={{ opacity: 0 }}
- onClick={onClose}
- className="fixed inset-0 bg-black/60 z-50"
- />
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
- <motion.div
- initial={{ opacity: 0, scale: 0.95, y: 20 }}
- animate={{ opacity: 1, scale: 1, y: 0 }}
- exit={{ opacity: 0, scale: 0.95, y: 20 }}
- className="w-full max-w-sm p-6 relative pointer-events-auto border border-[#E50914]/20 bg-[#0A0A0A]"
- >
- <button
- onClick={onClose}
- className="absolute top-4 right-4 text-[#A1A1AA] hover:text-white transition-colors"
- >
- <X className="w-5 h-5" />
- </button>
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="w-full max-w-sm relative pointer-events-auto win-frame font-mono selection:bg-[#ca3a3a]"
+            >
+              {/* Window Titlebar */}
+              <div className="win-titlebar">
+                <span className="flex items-center gap-1.5 truncate">
+                  <span>💾</span>
+                  <span>C:\ORDERS\CLAIM.EXE</span>
+                </span>
+                <button
+                  onClick={onClose}
+                  className="win-btn"
+                  aria-label="Cerrar"
+                >
+                  ✕
+                </button>
+              </div>
 
- <div className="mb-6 mt-2">
- <div className="w-12 h-12 bg-[#E50914]/10 flex items-center justify-center mb-4 border border-[#E50914]/20">
- <Search className="w-6 h-6 text-[#E50914]" />
- </div>
- <h2 className="text-xl font-bold text-white mb-1">Reclamar Compra</h2>
- <p className="text-sm text-[#A1A1AA]">
- Introduce el código de tu pedido de Shopify (ej. #1024) para obtener tus coins correspondientes.
- </p>
- </div>
+              <div className="p-5 bg-[#0a0a0a]">
+                <div className="mb-4">
+                  <div className="w-10 h-10 bg-[#1a0505] border border-[#ca3a3a] flex items-center justify-center mb-3 text-[#ca3a3a]">
+                    <Search className="w-5 h-5" />
+                  </div>
+                  <h2 className="text-base font-bold text-white uppercase tracking-wider mb-1">
+                    Reclamar Compra
+                  </h2>
+                  <p className="text-xs text-[#A1A1AA] leading-relaxed">
+                    Introduce el código de tu pedido de Shopify (ej. <span className="text-white font-bold">#1024</span>) para sincronizar tus coins al instante.
+                  </p>
+                </div>
 
- <form onSubmit={handleSubmit} className="space-y-4">
- <div>
- <input
- type="text"
- value={orderName}
- onChange={(e) => setOrderName(e.target.value)}
- placeholder="#1024"
- className="w-full px-4 py-3 bg-[#111] text-white placeholder-[#52525B] focus:outline-none focus:ring-1 focus:ring-[#E50914]/50 transition-all text-center text-lg tracking-widest font-mono uppercase"
- />
- </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <input
+                      type="text"
+                      value={orderName}
+                      onChange={(e) => setOrderName(e.target.value)}
+                      placeholder="#1024"
+                      className="retro-input w-full text-center text-lg tracking-widest uppercase font-bold"
+                    />
+                  </div>
 
- <AnimatePresence>
- {error && (
- <motion.p
- initial={{ opacity: 0, height: 0 }}
- animate={{ opacity: 1, height: 'auto' }}
- exit={{ opacity: 0, height: 0 }}
- className="text-sm text-red-400 text-center bg-red-500/10 py-2 px-3"
- >
- {error}
- </motion.p>
- )}
- </AnimatePresence>
+                  <AnimatePresence>
+                    {error && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="text-xs text-[#ff6b6b] bg-[#1a0505] border border-[#ca3a3a] py-2 px-3 text-center"
+                      >
+                        {error}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
 
- <Button
- type="submit"
- className="w-full bg-[#E50914] hover:bg-[#B91C1C] text-white"
- isLoading={isLoading}
- disabled={!orderName.trim()}
- >
- Verificar y Reclamar
- </Button>
- </form>
- </motion.div>
- </div>
- </>
- )}
- </AnimatePresence>
- );
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-full"
+                    isLoading={isLoading}
+                    disabled={!orderName.trim()}
+                  >
+                    VERIFICAR Y RECLAMAR
+                  </Button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
+    </AnimatePresence>
+  );
 }

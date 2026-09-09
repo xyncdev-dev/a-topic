@@ -171,7 +171,8 @@ export async function getOrderByName(orderName: string): Promise<any> {
   }
 
   try {
-    const response = await fetch(`https://${storeUrl}/admin/api/2024-01/orders.json?name=${encodeURIComponent(orderName)}&status=any`, {
+    const formattedName = orderName.startsWith('#') ? orderName : `#${orderName}`;
+    let response = await fetch(`https://${storeUrl}/admin/api/2024-01/orders.json?name=${encodeURIComponent(formattedName)}&status=any`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -179,10 +180,26 @@ export async function getOrderByName(orderName: string): Promise<any> {
       },
     });
 
-    const data: any = await response.json();
+    let data: any = await response.json();
     if (data?.orders && data.orders.length > 0) {
       return data.orders[0];
     }
+
+    // Fallback: try raw orderName if formatted didn't return matches
+    if (formattedName !== orderName) {
+      response = await fetch(`https://${storeUrl}/admin/api/2024-01/orders.json?name=${encodeURIComponent(orderName)}&status=any`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Shopify-Access-Token': accessToken,
+        },
+      });
+      data = await response.json();
+      if (data?.orders && data.orders.length > 0) {
+        return data.orders[0];
+      }
+    }
+
     return null;
   } catch (error) {
     console.error('Error finding Shopify order:', error);

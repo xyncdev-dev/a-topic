@@ -21,7 +21,7 @@ function createConnection() {
   }
 
   return knex({
-    client: 'sqlite3',
+    client: 'better-sqlite3',
     connection: {
       filename: config.db.filename,
     },

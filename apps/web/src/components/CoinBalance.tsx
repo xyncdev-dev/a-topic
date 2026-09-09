@@ -2,118 +2,134 @@
 
 import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ClaimOrderModal } from './ClaimOrderModal';
 import { useAuth } from '../context/AuthContext';
 
 interface CoinBalanceProps {
- balance: number;
- className?: string;
+  balance: number;
+  className?: string;
 }
 
 function AnimatedNumber({ value }: { value: number }) {
- const motionVal = useMotionValue(0);
- const rounded = useTransform(motionVal, (v) => Math.floor(v).toLocaleString('es-ES'));
- const displayRef = useRef<HTMLSpanElement>(null);
+  const motionVal = useMotionValue(0);
+  const rounded = useTransform(motionVal, (v) => Math.floor(v).toLocaleString('es-ES'));
+  const displayRef = useRef<HTMLSpanElement>(null);
 
- useEffect(() => {
- const controls = animate(motionVal, value, {
- duration: 1.5,
- ease: [0.25, 0.46, 0.45, 0.94],
- });
- return controls.stop;
- }, [value, motionVal]);
+  useEffect(() => {
+    const controls = animate(motionVal, value, {
+      duration: 1.5,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    });
+    return controls.stop;
+  }, [value, motionVal]);
 
- useEffect(() => {
- return rounded.on('change', (v) => {
- if (displayRef.current) {
- displayRef.current.textContent = v;
- }
- });
- }, []);
+  useEffect(() => {
+    return rounded.on('change', (v) => {
+      if (displayRef.current) {
+        displayRef.current.textContent = v;
+      }
+    });
+  }, []);
 
- return <span ref={displayRef}>0</span>;
+  return <span ref={displayRef}>0</span>;
 }
 
 export function CoinBalance({ balance, className = '' }: CoinBalanceProps) {
- const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
- const [successMessage, setSuccessMessage] = useState('');
- const { refreshUser } = useAuth();
+  const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const { isAuthenticated, refreshUser } = useAuth();
+  const router = useRouter();
 
- const handleClaimSuccess = async (coinsEarned: number) => {
- setSuccessMessage(`¡Has ganado ${coinsEarned} coins!`);
- await refreshUser();
- setTimeout(() => setSuccessMessage(''), 5000);
- };
+  const handleClaimSuccess = async (coinsEarned: number) => {
+    setSuccessMessage(`¡Has ganado ${coinsEarned} coins!`);
+    await refreshUser();
+    setTimeout(() => setSuccessMessage(''), 5000);
+  };
 
- return (
- <motion.div
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ duration: 0.5 }}
- className={`relative overflow-hidden p-6 ${className}`}
- >
- {/* Success message popup */}
- <AnimatePresence>
- {successMessage && (
- <motion.div
- initial={{ opacity: 0, y: -20 }}
- animate={{ opacity: 1, y: 0 }}
- exit={{ opacity: 0, y: -20 }}
- className="absolute top-4 left-4 right-4 bg-emerald-500/90 text-white p-3 z-50 text-center font-bold text-sm"
- >
- {successMessage}
- </motion.div>
- )}
- </AnimatePresence>
+  const handleOpenClaim = () => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    setIsClaimModalOpen(true);
+  };
 
- {/* Background gradient */}
- <div className="absolute inset-0 E50914]/30 via-[#991B1B]/20 7F1D1D]/30" />
- <div className="absolute inset-0" />
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className={`win-frame font-mono selection:bg-[#ca3a3a] ${className}`}
+    >
+      {/* Window Titlebar */}
+      <div className="win-titlebar">
+        <span className="flex items-center gap-1.5">
+          <span>📁</span>
+          <span>C:\ATOPIC\WALLET.SYS</span>
+        </span>
+        <div className="win-controls flex items-center gap-1">
+          <span className="win-btn" aria-hidden="true">_</span>
+          <span className="win-btn" aria-hidden="true">□</span>
+          <span className="win-btn" aria-hidden="true">✕</span>
+        </div>
+      </div>
 
- {/* Decorative elements */}
- <div className="absolute -top-12 -right-12 w-32 h-32 bg-[#E50914]/20 blur-2xl" />
- <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-[#7F1D1D]/20 blur-2xl" />
+      {/* Success message popup */}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-emerald-500/90 text-white p-2.5 text-center font-bold text-xs border-b border-emerald-600"
+          >
+            {successMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
- <div className="relative z-10">
- <div className="flex items-center justify-between mb-1">
- <span className="text-sm text-white/60 font-medium uppercase tracking-wider">Tu Balance</span>
- <motion.div
- animate={{ rotateY: [0, 360] }}
- transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 5 }}
- className="text-2xl"
- >
- 
- </motion.div>
- </div>
+      <div className="p-5 bg-[#0a0a0a]">
+        {/* Retro Inset LCD-like Balance Screen */}
+        <div className="retro-inset p-4 mb-4">
+          <div className="flex items-center justify-between text-[11px] text-[#A1A1AA] uppercase tracking-wider mb-1">
+            <span>BALANCE DISPONIBLE</span>
+            <span className={isAuthenticated ? "text-emerald-400 font-bold" : "text-[#A1A1AA]"}>
+              {isAuthenticated ? "● ACTIVE" : "○ GUEST"}
+            </span>
+          </div>
 
- <div className="flex items-baseline gap-2">
- <span className="text-5xl font-bold font-[family-name:var(--font-display)] tracking-tight text-white">
- <AnimatedNumber value={balance} />
- </span>
- <span className="text-lg text-white/50 font-medium">coins</span>
- </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl sm:text-5xl font-black tracking-tight text-[#ca3a3a] font-[family-name:var(--font-mono)]">
+              <AnimatedNumber value={balance} />
+            </span>
+            <span className="text-sm uppercase font-bold text-[#A1A1AA]">
+              COINS
+            </span>
+          </div>
+        </div>
 
- {/* Shimmer line */}
- <div className="mt-4 h-px w-full via-white/20" />
+        {/* Action strip */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-[#1a0505]">
+          <p className="text-xs text-[#A1A1AA]">
+            1€ gastado en Shopify = 10 VIP Coins
+          </p>
+          <button
+            type="button"
+            onClick={handleOpenClaim}
+            className="btn-retro text-xs py-1.5 px-3 self-start sm:self-auto flex items-center gap-1.5"
+          >
+            <span>+</span>
+            <span>{isAuthenticated ? 'Reclamar Pedido' : 'Acceder y Reclamar'}</span>
+          </button>
+        </div>
+      </div>
 
- <div className="mt-4 flex flex-col gap-2">
- <p className="text-xs text-white/40">
- Canjea tus coins por descuentos exclusivos
- </p>
- <button 
- onClick={() => setIsClaimModalOpen(true)}
- className="text-xs text-[#E50914] font-medium hover:text-white transition-colors self-start underline underline-offset-2"
- >
- Reclamar código de compra
- </button>
- </div>
- </div>
-
- <ClaimOrderModal
- isOpen={isClaimModalOpen}
- onClose={() => setIsClaimModalOpen(false)}
- onSuccess={handleClaimSuccess}
- />
- </motion.div>
- );
+      <ClaimOrderModal
+        isOpen={isClaimModalOpen}
+        onClose={() => setIsClaimModalOpen(false)}
+        onSuccess={handleClaimSuccess}
+      />
+    </motion.div>
+  );
 }

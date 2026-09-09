@@ -1,3 +1,4 @@
+import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
@@ -37,12 +38,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="antialiased">
-        <AuthProvider>
-          <main className="max-w-md mx-auto min-h-dvh relative">
-            {children}
+        <ClerkProvider>
+          <AuthProvider>
+          <main className="w-full min-h-dvh relative">
+          {children}
           </main>
           <Navigation />
-        </AuthProvider>
+          </AuthProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

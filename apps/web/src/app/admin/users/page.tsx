@@ -42,81 +42,97 @@ export default function AdminUsersPage() {
 
  const hasMore = users.length < total;
 
- return (
- <div className="px-4 pt-6">
- <div className="mb-6">
- <h1 className="text-2xl font-bold font-[family-name:var(--font-display)] text-white">
- Usuarios Registrados
- </h1>
- <p className="text-sm text-[#A1A1AA] mt-1">
- Gestiona los usuarios y sus balances
- </p>
- </div>
+  return (
+    <div className="font-mono">
+      {/* Users Window */}
+      <div className="win-frame">
+        <div className="win-titlebar">
+          <span className="flex items-center gap-2 truncate">
+            <span>👤</span>
+            <span>C:\ADMIN\USER_DIR.DAT // USER_DIRECTORY</span>
+          </span>
+          <span className="text-[10px]">TOTAL: {total} REGISTROS</span>
+        </div>
 
- <div className="mb-4">
- <input
- type="text"
- placeholder="Buscar por email o nombre..."
- value={search}
- onChange={(e) => setSearch(e.target.value)}
- className="w-full px-4 py-3 text-sm text-white placeholder-[#52525B] focus:outline-none focus:ring-1 focus:ring-[#E50914]/50 transition-all"
- />
- </div>
+        <div className="p-4 sm:p-5 bg-[#0a0a0a]">
+          {/* Search bar */}
+          <div className="mb-5">
+            <input
+              type="text"
+              placeholder="BUSCAR POR EMAIL O NOMBRE..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="retro-input w-full text-xs placeholder-[#555]"
+            />
+          </div>
 
- <div className="space-y-3">
- {users.map((u, i) => (
- <Link key={u.id} href={`/admin/users/${u.id}`}>
- <motion.div
- initial={{ opacity: 0, y: 10 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ delay: i * 0.05 }}
- className="p-4 flex items-center justify-between hover:bg-white/[0.06] transition-colors cursor-pointer"
- >
- <div>
- <p className="text-sm font-bold text-white">{u.email}</p>
- <div className="flex items-center gap-2 mt-1">
- <span className="text-xs text-[#A1A1AA]">{u.name || 'Sin nombre'}</span>
- {u.role === 'admin' && (
- <span className="text-[10px] px-2 py-0.5 bg-[#E50914]/20 text-[#FCA5A5] border border-[#E50914]/30">
- Admin
- </span>
- )}
- </div>
- </div>
- <div className="text-right">
- <p className="text-lg font-bold text-white font-[family-name:var(--font-display)]">
- {u.currentBalance.toLocaleString('es-ES')} <span className="text-sm text-[#A1A1AA]"></span>
- </p>
- <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider">
- Nivel {u.tier}
- </p>
- </div>
- </motion.div>
- </Link>
- ))}
+          <div className="space-y-2.5">
+            {users.map((u, i) => (
+              <Link key={u.id} href={`/admin/users/${u.id}`} className="block group">
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className="p-3 bg-[#0d0d0d] border border-[#1a0505] group-hover:border-[#ca3a3a] group-hover:bg-[#150505] flex items-center justify-between transition-colors"
+                >
+                  <div className="min-w-0 pr-2">
+                    <p className="text-xs font-bold text-white group-hover:text-[#ff6b6b] transition-colors truncate">
+                      {u.email}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[11px] text-[#A1A1AA]">{u.name || 'Sin nombre'}</span>
+                      {u.role === 'admin' ? (
+                        <span className="retro-badge bg-[#1a0505] text-[#ff6b6b] border-[#ca3a3a]">
+                          ADMIN
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-[#666] border border-[#222] px-1.5 py-0.2">
+                          CLIENTE
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
- {loading && users.length === 0 && (
- <div className="text-center py-8">
- <span className="text-2xl animate-[coin-spin_0.6s_ease-out] inline-block"></span>
- </div>
- )}
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-bold text-white">
+                      {u.currentBalance.toLocaleString('es-ES')}{' '}
+                      <span className="text-[10px] text-[#ca3a3a]">COINS</span>
+                    </p>
+                    <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wider">
+                      NIVEL {u.tier}
+                    </p>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
 
- {!loading && users.length === 0 && (
- <div className="text-center py-8 text-[#A1A1AA] text-sm">
- No se encontraron usuarios.
- </div>
- )}
- </div>
+            {loading && users.length === 0 && (
+              <div className="retro-inset p-8 text-center">
+                <span className="text-2xl animate-[coin-spin_0.6s_ease-out] inline-block mb-2 text-[#ca3a3a]">
+                  ⚙
+                </span>
+                <p className="text-white text-xs font-bold">CONSULTANDO BASE DE DATOS...</p>
+              </div>
+            )}
 
- {hasMore && (
- <button
- onClick={loadMore}
- disabled={loading}
- className="w-full mt-4 py-3 text-sm text-[#E50914] hover:bg-white/[0.06] transition-colors cursor-pointer disabled:opacity-50"
- >
- {loading ? 'Cargando...' : 'Cargar más'}
- </button>
- )}
- </div>
- );
+            {!loading && users.length === 0 && (
+              <div className="retro-inset p-8 text-center text-[#A1A1AA] text-xs">
+                No se encontraron usuarios coincidentes con la búsqueda.
+              </div>
+            )}
+          </div>
+
+          {hasMore && (
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="btn-retro w-full mt-4 py-2 text-xs"
+            >
+              {loading ? 'CARGANDO...' : 'CARGAR MÁS REGISTROS [↓]'}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

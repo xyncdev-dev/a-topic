@@ -44,54 +44,60 @@ const navItems = [
 ];
 
 export function Navigation() {
- const pathname = usePathname();
+  const pathname = usePathname();
 
- // Don't show nav on login page
- if (pathname === '/login' || pathname === '/') {
- return null;
- }
+  // Don't show nav on login page, root redirect, home page, or admin pages
+  if (pathname === '/login' || pathname === '/' || pathname === '/home' || pathname.startsWith('/admin')) {
+    return null;
+  }
 
- return (
- <nav className="fixed bottom-0 left-0 right-0 z-40">
- <div className="border-t border-white/[0.06]">
- <div className="max-w-md mx-auto flex items-center justify-around px-2" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
- {navItems.map((item) => {
- const isActive = pathname === item.href;
- return (
- <Link
- key={item.href}
- href={item.href}
- className="relative flex flex-col items-center py-2.5 px-4 min-w-[64px]"
- >
- <div className="relative">
- <motion.div
- animate={{
- color: isActive ? '#E50914' : '#A1A1AA',
- scale: isActive ? 1.1 : 1,
- }}
- transition={{ type: 'spring', stiffness: 400, damping: 25 }}
- >
- {item.icon}
- </motion.div>
- {isActive && (
- <motion.div
- layoutId="nav-indicator"
- className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#E50914]"
- transition={{ type: 'spring', stiffness: 400, damping: 30 }}
- />
- )}
- </div>
- <motion.span
- animate={{ color: isActive ? '#FAFAFA' : '#71717A' }}
- className="text-[10px] mt-0.5 font-medium"
- >
- {item.label}
- </motion.span>
- </Link>
- );
- })}
- </div>
- </div>
- </nav>
- );
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0a0a0a] border-t-2 border-[#ca3a3a] shadow-[0_-2px_10px_rgba(0,0,0,0.8)] font-mono selection:bg-[#ca3a3a]">
+      <div
+        className="max-w-4xl mx-auto flex items-center justify-between px-2 py-1.5 gap-1.5"
+        style={{ paddingBottom: 'calc(6px + env(safe-area-inset-bottom, 0px))' }}
+      >
+        {/* Start Button shortcut to /home */}
+        <Link
+          href="/home"
+          className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 bg-[#0a0a0a] border-2 border-[#ca3a3a] text-xs font-bold text-white hover:bg-[#ca3a3a] transition-colors shadow-[1px_1px_0px_#000]"
+          title="Regresar a Inicio / Tienda"
+        >
+          <span className="text-[#ca3a3a] group-hover:text-white font-black">☰</span>
+          <span>START</span>
+        </Link>
+
+        {/* Taskbar Tabs */}
+        <div className="flex-1 flex items-center justify-around sm:justify-center gap-1.5 sm:gap-3">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:px-4 text-xs font-bold transition-all select-none ${
+                  isActive
+                    ? 'bg-[#ca3a3a] text-white border-2 border-t-[#1a0505] border-l-[#1a0505] border-b-[#ff6b6b] border-r-[#ff6b6b] shadow-inner translate-y-px'
+                    : 'bg-[#0a0a0a] text-[#A1A1AA] hover:text-white hover:bg-[#150505] border-2 border-t-[#ca3a3a] border-l-[#ca3a3a] border-b-[#1a0505] border-r-[#1a0505] shadow-[1px_1px_0px_#000]'
+                }`}
+              >
+                <span className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-[#ca3a3a]'}`}>
+                  {item.icon}
+                </span>
+                <span className="text-[11px] uppercase tracking-wider truncate">
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* System Status Pill */}
+        <div className="hidden md:flex items-center gap-2 px-2.5 py-1 bg-[#111111] border border-[#1a0505] text-[10px] text-emerald-400 font-bold">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>NET: ONLINE</span>
+        </div>
+      </div>
+    </nav>
+  );
 }

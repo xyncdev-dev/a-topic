@@ -30,67 +30,78 @@ export default function AdminTransactionsPage() {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold font-[family-name:var(--font-display)] text-white uppercase tracking-wider">
-          Registro Global de Actividad
-        </h2>
-        <span className="text-sm text-[#A1A1AA]">Últimas 50 transacciones</span>
-      </div>
+    <div className="font-mono">
+      {/* Global Activity Window */}
+      <div className="win-frame">
+        <div className="win-titlebar">
+          <span className="flex items-center gap-2 truncate">
+            <span>📜</span>
+            <span>C:\LOGS\GLOBAL_AUDIT.LOG // LEDGER_VIEW</span>
+          </span>
+          <span className="text-[10px]">ÚLTIMAS 50 TRANSACCIONES</span>
+        </div>
 
-      <div className="bg-[#0A0A0A] border border-white/10 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-white">
-            <thead className="bg-white/[0.03] text-[#A1A1AA] uppercase tracking-wider text-xs">
-              <tr>
-                <th className="px-6 py-4 font-semibold">Fecha</th>
-                <th className="px-6 py-4 font-semibold">Usuario</th>
-                <th className="px-6 py-4 font-semibold text-right">Monto</th>
-                <th className="px-6 py-4 font-semibold">Tipo</th>
-                <th className="px-6 py-4 font-semibold">Descripción</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.05]">
-              {transactions.length === 0 ? (
+        <div className="p-4 bg-[#0a0a0a]">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-white">
+              <thead className="bg-[#111] border-b-2 border-[#ca3a3a] text-[#A1A1AA] uppercase tracking-wider text-[10px]">
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-[#A1A1AA]">
-                    No hay actividad reciente.
-                  </td>
+                  <th className="px-4 py-3 font-bold">FECHA</th>
+                  <th className="px-4 py-3 font-bold">USUARIO</th>
+                  <th className="px-4 py-3 font-bold text-right">MONTO</th>
+                  <th className="px-4 py-3 font-bold">TIPO</th>
+                  <th className="px-4 py-3 font-bold">DETALLE</th>
                 </tr>
-              ) : (
-                transactions.map((tx: any) => {
-                  const isPositive = tx.amount > 0;
-                  return (
-                    <tr key={tx.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-6 py-4 text-[#A1A1AA] whitespace-nowrap">
-                        {new Date(tx.created_at).toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <a href={`/admin/users/${tx.user_id}`} className="font-medium hover:text-[#E50914] transition-colors">
-                            {tx.user_name || tx.user_email.split('@')[0]}
-                          </a>
-                          <span className="text-xs text-[#777]">{tx.user_email}</span>
-                        </div>
-                      </td>
-                      <td className={`px-6 py-4 text-right font-bold font-[family-name:var(--font-display)] ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-                        {isPositive ? '+' : ''}{tx.amount}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${isPositive ? 'bg-emerald-400/10 text-emerald-400' : 'bg-red-400/10 text-red-400'}`}>
-                          {tx.type}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-[#A1A1AA]">
-                        {tx.description}
-                        {tx.reference_id && <span className="block text-xs text-[#555] mt-0.5">Ref: {tx.reference_id}</span>}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-[#1a0505]">
+                {transactions.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-8 text-center text-[#A1A1AA]">
+                      No hay actividad registrada en el sistema.
+                    </td>
+                  </tr>
+                ) : (
+                  transactions.map((tx: any) => {
+                    const isPositive = tx.amount > 0;
+                    return (
+                      <tr key={tx.id} className="hover:bg-[#120505] transition-colors">
+                        <td className="px-4 py-3 text-[#A1A1AA] whitespace-nowrap text-[11px]">
+                          {new Date(tx.created_at).toLocaleString()}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex flex-col">
+                            <a
+                              href={`/admin/users/${tx.user_id}`}
+                              className="font-bold text-white hover:text-[#ff6b6b] hover:underline transition-colors"
+                            >
+                              {tx.user_name || tx.user_email.split('@')[0]}
+                            </a>
+                            <span className="text-[10px] text-[#777]">{tx.user_email}</span>
+                          </div>
+                        </td>
+                        <td className={`px-4 py-3 text-right font-bold text-sm tracking-wider ${isPositive ? 'text-emerald-400' : 'text-[#ff6b6b]'}`}>
+                          {isPositive ? '+' : ''}{tx.amount} <span className="text-[10px]">COINS</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`retro-badge ${isPositive ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/40' : 'bg-[#1a0505] text-[#ff6b6b] border-[#ca3a3a]'}`}>
+                            {tx.type.toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-[#A1A1AA]">
+                          {tx.description}
+                          {tx.reference_id && (
+                            <span className="block text-[10px] text-[#666] mt-0.5">
+                              REF: {tx.reference_id}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

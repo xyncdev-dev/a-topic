@@ -1,8 +1,9 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useUser, useClerk } from '@clerk/nextjs';
 import { api } from '../lib/api';
-import type { UserProfile, AuthResponse } from '@a-topic/shared';
+import type { UserProfile } from '@a-topic/shared';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -11,67 +12,63 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name?: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { isLoaded: isClerkLoaded, isSignedIn, user: clerkUser } = useUser();
+  const { signOut } = useClerk();
+
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const saveAuth = (authResponse: AuthResponse) => {
-    setToken(authResponse.token);
-    setUser(authResponse.user);
-    localStorage.setItem('atopic_token', authResponse.token);
-  };
-
-  const logout = useCallback(() => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('atopic_token');
-  }, []);
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false);
 
   const refreshUser = useCallback(async () => {
     try {
       const profile = await api.get<UserProfile>('/user/profile');
       setUser(profile);
-    } catch {
-      // Token might be expired
-      logout();
+    } catch (err) {
+      console.warn('Failed to fetch user profile:', err);
     }
-  }, [logout]);
+  }, []);
 
-  // Check for existing token on mount
   useEffect(() => {
-    const savedToken = localStorage.getItem('atopic_token');
-    if (savedToken) {
-      setToken(savedToken);
-      refreshUser().finally(() => setIsLoading(false));
+    if (!isClerkLoaded) return;
+
+    if (isSignedIn) {
+      setIsFetchingProfile(true);
+      refreshUser().finally(() => setIsFetchingProfile(false));
     } else {
-      setIsLoading(false);
+      setUser(null);
     }
-  }, [refreshUser]);
+  }, [isClerkLoaded, isSignedIn, refreshUser]);
 
-  const login = async (email: string, password: string) => {
-    const response = await api.post<AuthResponse>('/auth/login', { email, password });
-    saveAuth(response);
+  const logout = useCallback(async () => {
+    setUser(null);
+    localStorage.removeItem('atopic_token');
+    await signOut();
+  }, [signOut]);
+
+  const login = async () => {
+    await refreshUser();
   };
 
-  const register = async (email: string, password: string, name?: string) => {
-    const response = await api.post<AuthResponse>('/auth/register', { email, password, name });
-    saveAuth(response);
+  const register = async () => {
+    await refreshUser();
   };
+
+  const isLoading = !isClerkLoaded || (Boolean(isSignedIn) && !user && isFetchingProfile);
+  const isAuthenticated = Boolean(isSignedIn && user);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
+        token: null,
         isLoading,
-        isAuthenticated: !!user && !!token,
+        isAuthenticated,
         login,
         register,
         logout,

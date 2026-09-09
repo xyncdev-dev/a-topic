@@ -13,6 +13,7 @@ import adminRoutes from './routes/admin';
 
 // Middleware
 import { webhookVerify } from './middleware/webhookVerify';
+import { clerkMiddleware } from '@clerk/express';
 
 export const app = express();
 
@@ -40,6 +41,12 @@ app.use(async (_req, res, next) => {
 app.use(cors({
   origin: config.corsOrigin,
   credentials: true,
+}));
+
+// ─── Clerk Authentication Middleware ───────────────────────────
+app.use(clerkMiddleware({
+  publishableKey: config.clerkPublishableKey,
+  secretKey: config.clerkSecretKey,
 }));
 
 // ─── Webhook routes (must use raw body for HMAC verification) ──
