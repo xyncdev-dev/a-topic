@@ -32,8 +32,7 @@
     "typescript": "^5.5.0"
   },
   "optionalDependencies": {
-    "better-sqlite3": "^13.0.3",
-    "sqlite3": "^5.1.7"
+    "better-sqlite3": "^13.0.3"
   },
   "devDependencies": {
     "tsx": "^4.16.0"
